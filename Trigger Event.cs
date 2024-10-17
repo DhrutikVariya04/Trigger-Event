@@ -2,14 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UIElements;
 
 public class TriggerEvent : MonoBehaviour
 {
     [SerializeField]
     GameObject Box;
 
-    float speed = 10f;
+    private Vector3 startPosition;
+    private float speed = 10f;
 
+    private void Start()
+    {
+        startPosition = Box.transform.position;
+    }
     public void Right()
     {
         var Pos = Box.transform.position;
@@ -52,20 +58,15 @@ public class TriggerEvent : MonoBehaviour
         Box.transform.position = Pos;
     }
 
-    public void Check(PointerEventData Data)
+    public void OnDrag(BaseEventData Data)
     {
-        // Access the drag delta
-        Vector2 dragDelta = Data.delta;
+        PointerEventData eventData = Data as PointerEventData;
 
-        // Check if the drag is left or right
-        if (dragDelta.x > 0)
-        {
-            Debug.Log("Dragging Right: " + dragDelta.x);
-        }
-        else if (dragDelta.x < 0)
-        {
-            Debug.Log("Dragging Left: " + dragDelta.x);
-        }
+        Vector2 dragDelta = new Vector2(eventData.delta.x, 0) * Time.deltaTime;
+        dragDelta.x += Mathf.Clamp(dragDelta.x, -455f, 455);
+        Box.transform.position += (Vector3)dragDelta;
+
+        print("dragDelta ====> "+ dragDelta.x);
     }
 
 }
