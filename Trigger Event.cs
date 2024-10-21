@@ -6,7 +6,7 @@ public class TriggerEvent : MonoBehaviour
     [SerializeField]
     GameObject Box;
 
-    PointerEventData eventData;
+    PointerEventData _eventData;
     private Vector3 startPosition;
     private Vector2 initialPosition;
     private float speed = 100f;
@@ -19,9 +19,14 @@ public class TriggerEvent : MonoBehaviour
 
     void Update()
     {
+
         if (isDragging)
         {
-            Vector2 currentPosition = eventData.position;
+            Vector2 dragDelta = new Vector2(_eventData.delta.x, 0) * Time.deltaTime;
+            Box.transform.position += (Vector3)dragDelta;
+            dragDelta.y = startPosition.y;
+
+            /*Vector2 currentPosition = eventData.position;
             Vector2 delta = currentPosition - initialPosition;
 
             float maxDelta = Screen.height * 0.2f;
@@ -31,7 +36,7 @@ public class TriggerEvent : MonoBehaviour
 
             newPosition.y = startPosition.y;
 
-            Box.transform.position = newPosition;
+            Box.transform.position = newPosition;*/
 
         }
     }
@@ -80,6 +85,7 @@ public class TriggerEvent : MonoBehaviour
         Box.transform.position = Pos;
     }
 
+    // Using Drag For Box Drag :--
     
     public void OnDrag(BaseEventData Data)
     {
@@ -91,15 +97,21 @@ public class TriggerEvent : MonoBehaviour
         print("dragDelta ====> "+ dragDelta.x);
     }
 
-    // For Drag Box :--
+    // Click Down And Up for Drag Box  :--
 
     public void OnPointerDown(BaseEventData eventData)
     {
         PointerEventData EventData = eventData as PointerEventData;
+        var Pos = Box.transform.position;
 
-        this.eventData = EventData;
+        _eventData = EventData;
         isDragging = true;
+
         initialPosition = EventData.position;
+
+        /*Pos.x = initialPosition.x * Time.deltaTime;
+        print(Pos.x);
+        Box.transform.position = Pos;*/
     }
 
     public void OnPointerUp(BaseEventData eventData)
